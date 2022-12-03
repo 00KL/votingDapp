@@ -511,10 +511,9 @@ const getVoteButton = document.querySelector("#get-vote");
 const setNewVote = () => {
   const candidate = document.querySelector("#codename-select").value;
   const turingAmount = parseFloat(document.querySelector("#turing-amount").value);
-  console.log("Voto: ",candidate, turingAmount);
   if(turingAmount > 2) return;
   const saTuringAmount = turingAmount*(10**18);
-  Contract.vote(candidate, saTuringAmount).then((tx) => {
+  Contract.vote(candidate, String(saTuringAmount)).then((tx) => {
     console.log(tx);
   });
 }
