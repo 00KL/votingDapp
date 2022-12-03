@@ -523,7 +523,7 @@ const setIssueToken = () => {
   const amount = parseFloat(document.querySelector("#amount").value);
   console.log("Issue: ",receiver, amount);
   const saTuringAmount = amount*(10**18);
-  Contract.issueToken(receiver, saTuringAmount).then((tx) => {
+  Contract.issueToken(receiver, String(saTuringAmount)).then((tx) => {
     console.log(tx);
   });
 }
@@ -565,9 +565,9 @@ window.onload = async () => {
 	
 	  const checkTeacher = await Contract.isTeacher();
 	  if(checkTeacher){
-		voteSection.style.display = "none";
-		teacherSection.style.display = "block";
-	  }else{
+		  voteSection.style.display = "none";
+		  teacherSection.style.display = "block";
+	}else{
 		voteSection.style.display = "block";
 		teacherSection.style.display = "none";
 	  }
