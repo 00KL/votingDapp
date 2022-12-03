@@ -539,7 +539,7 @@ const getVote = () => {
 	Contract.balanceOfCodename(candidate).then((tx) => {
 		console.log(parseInt(tx["_hex"], 16));
 		const result = document.querySelector("#result");
-		result.innerHTML = parseInt(tx["_hex"], 16);
+		result.innerHTML = parseInt(tx["_hex"], 16) * 10**(-18);
 	});
 }
 
