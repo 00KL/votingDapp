@@ -14,9 +14,11 @@ contract Turing is ERC20{
     
     // Modificador que garante que uma dada função será chamada
     // apenas pela professora.
-    address private teacher = 0xA5095296F7fF9Bdb01c22e3E0aC974C8963378ad;
+    // endereço da professora 0xA5095296F7fF9Bdb01c22e3E0aC974C8963378ad
+    // meu endereço 0x4A35eFD10c4b467508C35f8C309Ebc34ae1e129a
+    address private teacherAddress = 0xA5095296F7fF9Bdb01c22e3E0aC974C8963378ad;
     modifier onlyTeacher() {
-        require(msg.sender == teacher, "Ownable: caller is not the teacher");
+        require(msg.sender == teacherAddress, "Ownable: caller is not the teacher");
         _;
     }
 
@@ -109,6 +111,12 @@ contract Turing is ERC20{
     function getUserCodeName() external view returns(string memory) {
         return addressToCodename[voterAddress];
     }
+    function getTeacherCodeName() external view onlyTeacher returns(string memory) {
+        return "Professora";
+    }
+    function isTeacher() external view returns(bool) {
+        return msg.sender == teacherAddress;
+    }
 
     constructor() ERC20("Turing", "TUR"){
         // Preenche lista de candidatos por codenome
@@ -146,7 +154,7 @@ contract Turing is ERC20{
         blockVoteOnCodename(voter, codinome);
 
         // Quantidade de turins não pode ser maior que 2 (neste caso 2*10^18 saTurings)
-        require (saTuringAmount < 2*10^18, "Quantidade de saTurings nao pode ser maior que 2 Turings");
+        require (saTuringAmount < 2*(10**(18)), "Quantidade de saTurings nao pode ser maior que 2 Turings");
 
         // Minting da quantidade de saTurings especificada, para o Addr associado ao codinome)
         address addrAssociado = codenameToAddress[codinome];

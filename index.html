@@ -9,7 +9,9 @@
     <title>Voting dApp</title>
   </head>
   <body>
-    <section class="pet-form-section">
+
+    <!-- Area de votação -->
+    <section class="pet-form-section" id="vote-section">
       <section class="section-header">
         <span class="pet-data voter-codename"></span>
       </section>
@@ -22,7 +24,8 @@
       </form>
     </section>
 
-    <section class="pet-form-section">
+    <!-- Area da professora -->
+    <section class="pet-form-section" id="teacher-section">
       <section class="section-header">
         <span class="pet-data">Professora</span>
       </section>
@@ -35,6 +38,18 @@
         <input type="button" value="endVoting" id="end-voting" />
       </form>
     </section>
+
+    <!-- Area de resultados -->
+    <section class="pet-form-section" id="result-section">
+      <section class="section-header">
+        <span class="pet-data">Resultados</span>
+      </section>
+      <form>
+        <label for="">Candidato</label>
+        <select id="result-select"> </select>
+        <input type="button" value="Submit" id="get-vote" />
+        <span class="pet-data result" id="result"></span>
+      </form>
 
     <!-- Importing Ethers.js script -->
     <script

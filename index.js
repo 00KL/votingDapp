@@ -2,7 +2,7 @@
 let Contract;
 
 // 2. Set contract address and ABI
-const Contract_Address = "0x1Ca02ee367331c93f1794465929F8eEe1aD17588";
+const Contract_Address = "0xedC22fbfd725051C0bfd0424986257CD1737fEdd";
 // The Contract Application Binary Interface (ABI) is the standard way 
 // to interact with contracts in the Ethereum ecosystem, both from 
 // outside the blockchain and for contract-to-contract interaction. 
@@ -210,6 +210,11 @@ const Contract_ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "string",
@@ -226,11 +231,6 @@ const Contract_ABI = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	},
 	{
 		"inputs": [
@@ -423,6 +423,19 @@ const Contract_ABI = [
 	},
 	{
 		"inputs": [],
+		"name": "isTeacher",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "name",
 		"outputs": [
 			{
@@ -490,6 +503,9 @@ const Contract_ABI = [
 const setVoteButton = document.querySelector("#set-new-vote");
 const setIssueTokenButton = document.querySelector("#set-issue-token");
 const setEndVotingButton = document.querySelector("#end-voting");
+const voteSection = document.querySelector("#vote-section");
+const teacherSection = document.querySelector("#teacher-section");
+const getVoteButton = document.querySelector("#get-vote");
 
 /* 5. Function to set pet details */
 const setNewVote = () => {
@@ -519,10 +535,22 @@ const setEndVoting = () => {
   });
 }
 
+const getVote = () => {
+	const candidate = document.querySelector("#result-select").value;
+	Contract.balanceOfCodename(candidate).then((tx) => {
+		console.log(parseInt(tx["_hex"], 16));
+		const result = document.querySelector("#result");
+		result.innerHTML = parseInt(tx["_hex"], 16);
+	});
+}
+
+// 6. Adding event listeners to the buttons
 setVoteButton.addEventListener("click", setNewVote);
 setIssueTokenButton.addEventListener("click", setIssueToken);
 setEndVotingButton.addEventListener("click", setEndVoting);
+getVoteButton.addEventListener("click", getVote);
 
+// 7. Carregamento do contrato 
 window.onload = async () => {
   const provider = new ethers.providers.Web3Provider(window.ethereum, "goerli");
   provider.send("eth_requestAccounts", []).then( () => {
@@ -535,15 +563,27 @@ window.onload = async () => {
         Contract_ABI,
         signer
       );
+	
+	  const checkTeacher = await Contract.isTeacher();
+	  if(checkTeacher){
+		voteSection.style.display = "none";
+		teacherSection.style.display = "block";
+	  }else{
+		voteSection.style.display = "block";
+		teacherSection.style.display = "none";
+	  }
+
       const codename = await Contract.getUserCodeName();
       document.querySelector(".voter-codename").innerText = codename;
 
       const codenameOptions = await Contract.getCodenameList();
-      var selectBox = document.getElementById('codename-select');
+      var selectBox = document.querySelector("#codename-select");
+	  var selectBox2 = document.querySelector("#result-select");
       for(var i = 0, l = codenameOptions.length; i < l; i++){
         var codenameOption = codenameOptions[i];
         selectBox.options.add( new Option(codenameOption, codenameOption, false) );
-      }
+		selectBox2.options.add( new Option(codenameOption, codenameOption, false) );
+	}
     });
   });
 
