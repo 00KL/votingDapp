@@ -18,7 +18,7 @@ contract Turing is ERC20{
     // meu endereço 0x4A35eFD10c4b467508C35f8C309Ebc34ae1e129a
     address private teacherAddress = 0xA5095296F7fF9Bdb01c22e3E0aC974C8963378ad;
     modifier onlyTeacher() {
-        require(msg.sender == teacherAddress, "Ownable: caller is not the teacher");
+        require(msg.sender == teacherAddress, "Esta funcao somente pode ser usada pela professora");
         _;
     }
 
@@ -142,13 +142,13 @@ contract Turing is ERC20{
         string memory voter = addressToCodename[voterAddress];
 
         // Candidato não pode votar em si mesmo
-        require (keccak256(bytes(voter)) != keccak256(bytes(codinome)), ("Candidato nao pode votar em si mesmo"));
+        require (keccak256(bytes(voter)) != keccak256(bytes(codinome)), ("Usuario nao pode votar em si mesmo"));
 
         // Não se pode votar num usuário que nao exista
         //  require(bytes(codenameToAddress[codinome]).length > 0, "Codinome não encontrado");
         
         // Candidato não pode votar duas vezes num mesmo candidato
-        require (!checkVoteOnCodename(voter, codinome), ("Candidato nao pode votar duas vezes no mesmo codinome"));
+        require (!checkVoteOnCodename(voter, codinome), ("Usuario nao pode votar duas vezes no mesmo codinome"));
        
         // Uma vez que o candidato conseguiu votar em outro ele deve ser impossibilitado de votar nesse outro
         blockVoteOnCodename(voter, codinome);
