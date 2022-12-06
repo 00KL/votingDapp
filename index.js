@@ -2,7 +2,7 @@
 let Contract;
 
 // 2. Set contract address and ABI
-const Contract_Address = "0xedC22fbfd725051C0bfd0424986257CD1737fEdd";
+const Contract_Address = "0x66b418Fc98c2F522Ec9eeFA3233828d4CB3b60da";
 // The Contract Application Binary Interface (ABI) is the standard way 
 // to interact with contracts in the Ethereum ecosystem, both from 
 // outside the blockchain and for contract-to-contract interaction. 
@@ -507,30 +507,69 @@ const voteSection = document.querySelector("#vote-section");
 const teacherSection = document.querySelector("#teacher-section");
 const getVoteButton = document.querySelector("#get-vote");
 
+const extractError = (err) => {
+	var erro = String(err)
+	var mySubString = erro.substring(
+		erro.indexOf(",\"message") + 1, 
+		erro.indexOf(",\"data\"")
+	);
+
+	var aux = mySubString.substring(
+		mySubString.indexOf(":") + 1, 
+		mySubString.length
+	);
+
+	var aux2 = aux.substring(
+		aux.indexOf(":") + 1, 
+		aux.length -1
+	);
+	if (aux2.length == 0) {
+		return "Error on transaction"
+	}
+	return aux2;
+}
+
 /* 5. Function to set pet details */
 const setNewVote = () => {
   const candidate = document.querySelector("#codename-select").value;
   const turingAmount = parseFloat(document.querySelector("#turing-amount").value);
-  if(turingAmount > 2) return;
+  if(turingAmount > 2){
+	document.querySelector("#turing-amount-error").style.display = "block";
+	return;
+  }
+  document.querySelector("#turing-amount-error").style.display = "none";
   const saTuringAmount = turingAmount*(10**18);
   Contract.vote(candidate, String(saTuringAmount)).then((tx) => {
     console.log(tx);
+  }).catch((err) => {
+	var error = extractError(err);
+	console.log("Error: ", error);
+	alert(error);
   });
 }
 
 const setIssueToken = () => {
   const receiver = document.querySelector("#receiver").value;
   const amount = parseFloat(document.querySelector("#amount").value);
-  console.log("Issue: ",receiver, amount);
+//   console.log("Issue: ",receiver, amount);
   const saTuringAmount = amount*(10**18);
   Contract.issueToken(receiver, String(saTuringAmount)).then((tx) => {
     console.log(tx);
+  }).catch((err) => {
+	var error = extractError(err);
+	console.log("Error: ", error);
+	console.log(err);
+	alert(error);
   });
 }
 
 const setEndVoting = () => {
   Contract.endVoting().then((tx) => {
     console.log(tx);
+  }).catch((err) => {
+	var error = extractError(err);
+	console.log("Error: ", error);
+	alert(error);
   });
 }
 
@@ -541,6 +580,14 @@ const getVote = () => {
 		const result = document.querySelector("#result");
 		result.innerHTML = parseInt(tx["_hex"], 16) * 10**(-18);
 	});
+}
+
+function onlyNumberKey(evt) {
+	// Only ASCII character in that range allowed
+	var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+		if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+			return false;
+	return true;
 }
 
 // 6. Adding event listeners to the buttons
@@ -567,13 +614,13 @@ window.onload = async () => {
 	  if(checkTeacher){
 		  voteSection.style.display = "none";
 		  teacherSection.style.display = "block";
-	}else{
+	  }else{
 		voteSection.style.display = "block";
 		teacherSection.style.display = "none";
 	  }
 
       const codename = await Contract.getUserCodeName();
-      document.querySelector(".voter-codename").innerText = codename;
+      document.querySelector(".voter-codename").innerText = "Usuário: " + codename;
 
       const codenameOptions = await Contract.getCodenameList();
       var selectBox = document.querySelector("#codename-select");
