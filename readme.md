@@ -1,3 +1,6 @@
+# Dapp para votação na blockchain via uma interface web
+Application for candidate voting made in Solidity and Simple HTML, Javascript and CSS.
+
 # Para rodar o Dapp basta executar os comandos abaixo:
 ```bash
 npm install connect serve-static
